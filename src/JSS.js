@@ -11,22 +11,12 @@
     JSON STYLE SHEET JAVASCRIPT LIBRARY (JSS.js)
     Allows ease use of JSS file formats to in place of CSS
 
-    Copyright 2017 James Johnston
+    Molded together by James Johnston
 
-    Permission is hereby granted, free of charge, to any person obtaining a copy of this
-    software and associated documentation files (the "Software"),
-    to deal in the Software without restriction, including without limitation the rights
-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
-    and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+    GNU GENERAL PUBLIC LICENS
 
-    The above copyright notice and this permission notice shall be
-    included in all copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-    INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
-    PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-    DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+    Use for whatever you want, just make sure you share for free
+    and don't mark as your own, thanks (aka be a jerk)
  *
  */
  var JSS = function() {}
@@ -59,7 +49,8 @@ JSS.prototype.load = JSS.load = function() {
   return source;
 }
 
-// Will convert CSS to JSS
+// Converts JSON text -> JSON objects -> cssjson objects -> CSS
+// Ughhhh. it suckkkksssss.
 JSS.prototype.convert = JSS.convert = function(txtJson) {
   var json = JSON.parse(txtJson);
   var cssJSON = CSSJSON.convertJSON(json);
