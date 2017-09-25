@@ -9,14 +9,14 @@
                \|_________\|_________|              \|_________|
 
     JSON STYLE SHEET JAVASCRIPT LIBRARY (JSS.js)
-    Allows ease use of JSS file formats to in place of CSS
+    Allows ease use of JSS file formats in place of CSS.
 
-    Molded together by James Johnston
+    Molded together by James Johnston - 9/25/2017
 
-    GNU GENERAL PUBLIC LICENS
+    GNU GENERAL PUBLIC LICENSE
 
     Use for whatever you want, just make sure you share for free
-    and don't mark as your own, thanks (aka be a jerk)
+    and don't mark as your own (aka be a jerk), thanks.
  *
  */
  var JSS = function() {}
