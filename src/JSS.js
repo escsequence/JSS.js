@@ -72,4 +72,4 @@ JSS.prototype.convert = JSS.convert = function(txtJson) {
 
 $(document).ready(function() {
   JSS.init();
-})();
+})

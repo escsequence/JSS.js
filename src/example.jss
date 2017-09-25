@@ -1,13 +1,19 @@
 {
     "body": {
         "background-color": "blue",
-        "color": "red",
+        "color": "white",
         "text-align": "center"
     },
     "h1": {
+      "color": "white",
       "background": "lightblue",
       "text-align": "center",
-      "font-size": "50px",
-      "height": "90px"
+      "font-size": "50px"
+    },
+    ".some_div_class": {
+      "background": "black",
+      "border-radius": "40px",
+      "padding": "20px",
+      "margin": "20px"
     }
 }
