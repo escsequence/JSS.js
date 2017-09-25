@@ -8,7 +8,8 @@
       "color": "white",
       "background": "lightblue",
       "text-align": "center",
-      "font-size": "50px"
+      "font-size": "50px",
+      "width": "100%"
     },
     ".some_div_class": {
       "background": "black",
