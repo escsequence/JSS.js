@@ -24,6 +24,7 @@
  */
  const _JSS_DEBUG_MODE = true; // This debug mode will log various things
  const _JSS_DEBUG_ENABLE_COMMENTS = true; // Debug mode and enable comments need to be enabled to see comments.
+ const _JSS_OVERRIDE_NO_REUSE = false; // If enabled, JSS.js will not use src variables to reuse source files.
 
 
  var JSS = function() {}
@@ -36,6 +37,10 @@
      cssString += '\t'.repeat(depth) + '}\n';
      return cssString;
  };
+
+ JSS.prototype.srcLocation = JSS.srcLocation = [];
+ JSS.prototype.srcCSS = JSS.srcCSS = [];
+ JSS.prototype.srcJSS = JSS.srcJSS = [];
 
  JSS.prototype.convertJSON = JSS.convertJSON = function(json) {
    var cssNodes = [];
@@ -112,17 +117,23 @@ JSS.prototype.init = JSS.init = function() {
 
 // Will load based on this.ref() - which checks for link tags
 // fallback argument is loaded if nothing else if found
-JSS.prototype.load = JSS.load = function() {
-  var ref = this.ref();
-  if (ref.length > 0) {
-    JSS.log("Loaded link tags: " + ref);
-    $.each(this.ref(), function(n, item) {
-      JSS.loadFile(item.href, function(response) {
-        JSS.apply(JSS.convert(response));
-      });
-    })
+JSS.prototype.load = JSS.load = function(noref, file) {
+  if (noref === undefined || noref === false) {
+    var ref = this.ref();
+    if (ref.length > 0) {
+      JSS.log("Loaded link tags: " + ref);
+      $.each(this.ref(), function(n, item) {
+        JSS.loadFile(item.href, function(response) {
+          JSS.apply(JSS.convert(response));
+        });
+      })
+    } else {
+        JSS.log("No link tags exist! No further work to do...");
+    }
   } else {
-      JSS.log("No link tags exist! No further work to do...");
+    JSS.loadFile(file, function(response) {
+      JSS.apply(JSS.convert(response));
+    });
   }
 }
 
@@ -140,19 +151,37 @@ JSS.prototype.convert = JSS.convert = function(JSONtxt) {
  */
 JSS.prototype.loadFile = JSS.loadFile = function(file, callback) {
   JSS.log("Attempting to load file: " + file);
-  try {
-    $.when($.get(file))
-      .done(function(response) {
-        JSS.log("Loading file completed! Response: " + response);
-        try {
-          callback(response);
-        } catch(err) {
-          JSS.log("Callback method is required. Error: " + err);
-        }
-    });
-  } catch(err) {
-    JSS.log("Loading file failed! Error: " + err);
+  if (!_JSS_OVERRIDE_NO_REUSE) {
+    var exists = $.inArray(file, this.srcLocation);
+  } else {
+    exists = -1;
   }
+  if (exists === -1) {
+    try {
+      $.when($.get(file))
+        .done(function(response) {
+          JSS.log("Loading file completed! Response: " + response);
+          try {
+            callback(response);
+
+            if (!_JSS_OVERRIDE_NO_REUSE)
+              JSS.srcLocation.push(file)
+
+          } catch(err) {
+            JSS.log("Callback method is required. Error: " + err);
+          }
+      });
+    } catch(err) {
+      JSS.log("Loading file failed! Error: " + err);
+    }
+  } else {
+    JSS.log("Item has already been loaded, reusing...")
+    this.apply(this.srcCSS[exists]);
+  }
+}
+
+JSS.prototype.fromFile = JSS.fromFile = function(file) {
+  this.load(true, file);
 }
 
 /**
@@ -170,12 +199,16 @@ JSS.prototype.log = JSS.log = function(log) {
  */
 JSS.prototype.apply = JSS.apply = function(css) {
   JSS.log("Applying CSS: " + css);
-  var style = document.createElement("style");
-  $.each(css, function(index, cssLine) {
-    style.appendChild(document.createTextNode(cssLine))
-    JSS.log("Applied new style - index: " + index + ", cssLine: " + cssLine + "");
-  })
-  document.head.appendChild(style)
+    var style = document.createElement("style");
+    $.each(css, function(index, cssLine) {
+      style.appendChild(document.createTextNode(cssLine))
+      JSS.log("Applied new style - index: " + index + ", cssLine: " + cssLine + "");
+    })
+    document.head.appendChild(style);
+
+    if (($.inArray(style, this.srcCSS) === -1) && !_JSS_OVERRIDE_NO_REUSE)
+      this.srcCSS.push(css)
+
 }
 
 $(document).ready(function() {
